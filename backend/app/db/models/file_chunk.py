@@ -2,10 +2,9 @@ import uuid
 from datetime import datetime
 
 from .file import File
-from sqlalchemy import DateTime, ForeignKey, Integer, Text, String
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import DateTime, ForeignKey, Integer, Text, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from app.db.base import Base
 
 
