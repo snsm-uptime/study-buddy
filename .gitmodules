@@ -1,0 +1,6 @@
+[submodule "documentation"]
+	path = documentation
+	url = git@github.com:snsm-uptime/study-buddy-documentation.git
+[submodule "backend"]
+	path = backend
+	url = git@github.com:snsm-uptime/study-buddy-backend.git
