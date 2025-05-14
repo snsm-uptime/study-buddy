@@ -27,3 +27,9 @@ makemigration: ## Generate Alembic revision
 
 lint: ## Run black, isort and mypy
 	docker exec -it $(APP_CONTAINER) poetry run pre-commit run --all-files
+
+base-build: ## Build the base image (used in dev/prod)
+	docker build -f backend/Dockerfile.base -t study-buddy-base .
+
+rebuild-dev: base-build ## Rebuild base + dev image
+	docker-compose -f docker-compose.dev.yml build backend
