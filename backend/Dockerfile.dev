@@ -3,6 +3,9 @@ FROM study-buddy-base:latest
 # --- Environment Config ---
 ENV ENV=development
 
+# --- Add dev-only system packages ---
+RUN apt-get update && apt-get install -y git && apt-get clean
+
 # --- Install development dependencies with cache mount ---
 RUN --mount=type=cache,target=/root/.cache/pip \
     poetry install --no-root --with dev
