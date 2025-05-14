@@ -3,26 +3,26 @@ repos:
     rev: 23.12.1
     hooks:
       - id: black
-        files: ^app/
+        files: ^backend/
 
   - repo: https://github.com/PyCQA/isort
     rev: 6.0.1
     hooks:
       - id: isort
-        files: ^app/
+        files: ^backend/
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.7.0
     hooks:
       - id: mypy
-        args: [--config-file=mypy.ini, app]
-        files: ^app/
+        args: [backend/app]
+        files: ^backend/
 
   - repo: local
     hooks:
       - id: run-pytest
         name: Run Pytest
-        entry: poetry run pytest
+        entry: poetry run pytest backend/
         language: system
         types: [python]
-        files: ^app/
+        files: ^backend/

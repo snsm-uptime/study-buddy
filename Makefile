@@ -25,8 +25,12 @@ migrate: ## Apply latest Alembic migrations
 makemigration: ## Generate Alembic revision
 	docker exec -it $(APP_CONTAINER) poetry run alembic revision --autogenerate -m
 
-lint: ## Run black, isort and mypy
+check: ## Run black, isort and mypy
 	docker exec -it $(APP_CONTAINER) poetry run pre-commit run --all-files
+
+lint:
+	docker exec -w /app/backend study-buddy-backend-dev poetry run black .
+	docker exec -w /app/backend study-buddy-backend-dev poetry run isort .
 
 base-build: ## Build the base image (used in dev/prod)
 	docker build -f backend/Dockerfile.base -t study-buddy-base .
