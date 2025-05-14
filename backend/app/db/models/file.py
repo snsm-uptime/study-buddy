@@ -1,12 +1,11 @@
 import uuid
 
-from sqlalchemy import Float, String, Text
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from app.db.base import Base
 from app.db.mixins import SoftDeletableMixin, TimestampMixin
 from app.db.models.file_chunk import FileChunk
+from sqlalchemy import Float, String, Text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class File(Base, TimestampMixin, SoftDeletableMixin):
