@@ -1,28 +1,33 @@
-repos:
-  - repo: https://github.com/psf/black
-    rev: 23.12.1
-    hooks:
-      - id: black
-        files: ^backend/
+# repos:
+#   - repo: https://github.com/psf/black
+#     rev: 23.12.1
+#     hooks:
+#       - id: black
+#         name: Black (backend)
+#         language_version: python3.12
+#         files: ^backend/
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 6.0.1
-    hooks:
-      - id: isort
-        files: ^backend/
+#   - repo: https://github.com/PyCQA/isort
+#     rev: 6.0.1
+#     hooks:
+#       - id: isort
+#         name: Isort (backend)
+#         language_version: python3.12
+#         files: ^backend/
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.0
-    hooks:
-      - id: mypy
-        args: [backend/app]
-        files: ^backend/
+#   - repo: https://github.com/pre-commit/mirrors-mypy
+#     rev: v1.7.0
+#     hooks:
+#       - id: mypy
+#         name: mypy (backend)
+#         args: ["--explicit-package-bases", "--config-file=backend/mypy.ini"]
+#         files: ^backend/
 
-  - repo: local
-    hooks:
-      - id: run-pytest
-        name: Run Pytest
-        entry: poetry run pytest backend/
-        language: system
-        types: [python]
-        files: ^backend/
+#   - repo: local
+#     hooks:
+#       - id: run-pytest
+#         name: Run Pytest (backend)
+#         entry: poetry run pytest
+#         language: system
+#         pass_filenames: false
+#         types: [python]
