@@ -23,8 +23,8 @@ makemigration:  ## ✏️ Generate new Alembic revision
 	docker exec -it $(APP_CONTAINER) poetry run alembic revision --autogenerate -m
 
 lint:
-	docker exec $(APP_CONTAINER) poetry run black .
-	docker exec $(APP_CONTAINER) poetry run isort .
+	cd ./backend && poetry run black .
+	cd ./backend && poetry run isort ./backend
 	docker exec -w /app $(APP_CONTAINER) poetry run mypy app
 
 base-build: ## Build the base image (used in dev/prod)
