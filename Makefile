@@ -1,42 +1,40 @@
-APP_CONTAINER=study-buddy-backend-dev
+APP_CONTAINER = study-buddy-backend-dev
+DOCKER_COMPOSE ?= docker-compose -f docker-compose.dev.yml
 
-help:
+help:  ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "🎯 %-20s %s\n", $$1, $$2}'
 
-# -------------------
-# General Commands
-# -------------------
+up:
+	$(DOCKER_COMPOSE) up -d backend postgres ollama
 
-up: ## Start dev stack
-	docker-compose -f docker-compose.dev.yml up --build
+stop:
+	$(DOCKER_COMPOSE) down
 
-stop: ## Stop all containers
-	docker-compose -f docker-compose.dev.yml down
-
-shell: ## Enter backend container
+shell:
 	docker exec -it $(APP_CONTAINER) /bin/sh
 
-test: ## Run tests inside backend container
+test:
 	docker exec -it $(APP_CONTAINER) poetry run pytest
 
-migrate: ## Apply latest Alembic migrations
+migrate:  ## ⬆️ Run Alembic migrations
 	docker exec -it $(APP_CONTAINER) poetry run alembic upgrade head
 
-makemigration: ## Generate Alembic revision
+makemigration:  ## ✏️ Generate new Alembic revision
 	docker exec -it $(APP_CONTAINER) poetry run alembic revision --autogenerate -m
 
 lint:
-	docker exec -w /app/backend study-buddy-backend-dev poetry run black .
-	docker exec -w /app/backend study-buddy-backend-dev poetry run isort .
+	docker exec -w /app/backend $(APP_CONTAINER) poetry run black .
+	docker exec -w /app/backend $(APP_CONTAINER) poetry run isort .
+	docker exec -it $(APP_CONTAINER) poetry run mypy app
 
 base-build: ## Build the base image (used in dev/prod)
 	docker build -f backend/Dockerfile.base -t study-buddy-base .
 
-rebuild-dev: base-build ## Rebuild base + dev image
-	docker-compose -f docker-compose.dev.yml build backend
+rebuild-dev: base-build  ## 🔄 Rebuild backend using updated base
+	$(DOCKER_COMPOSE) build backend
 
-pre-commit-install: ## Install pre-commit hooks
-	cd backend && poetry run pre-commit install
+pre-commit-install:  ## 🔧 Install Git hooks
+	docker exec -it $(APP_CONTAINER) poetry run pre-commit install
 
-check:
-	poetry run pre-commit run --all-files
+check: lint test
+	
