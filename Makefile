@@ -19,6 +19,18 @@ pre-commit-install: ## Install Git hooks in container
 test: clean-pycache
 	docker exec -it $(APP_CONTAINER) poetry run pytest
 
+open-db:
+	docker exec -it study-buddy-db psql -U postgres -d study_buddy
+
+nuke-alembic:
+	@echo "🚨 Nuking Alembic state and regenerating initial migration..."
+	( \
+		docker exec study-buddy-db psql -U postgres -d study_buddy -c "DELETE FROM alembic_version;" && \
+		rm backend/alembic/versions/* & \
+		$(MAKE) revision m="init" && \
+		$(MAKE) migrate \
+	)
+
 # --- 🧬 DB / Alembic ---
 migrate: ## Run Alembic upgrade
 	docker exec -it $(APP_CONTAINER) poetry run alembic upgrade head
