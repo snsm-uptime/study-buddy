@@ -4,13 +4,16 @@ DOCKER_COMPOSE ?= docker-compose -f docker-compose.dev.yml
 # --- 🔧 Setup & Lint ---
 check: lint test ## Run linters and tests
 
+eval:
+	docker exec -w /app $(APP_CONTAINER) poetry run mypy app
+
 lint: ## Run all linters
 	cd ./backend && poetry run black .
-	cd ./backend && poetry run isort ./backend
+	cd ./backend && poetry run isort .
 	docker exec -w /app $(APP_CONTAINER) poetry run mypy app
 
 pre-commit-install: ## Install Git hooks in container
-	docker exec -it $(APP_CONTAINER) poetry run pre-commit install
+	cd ./backend poetry run pre-commit install
 
 # --- 🧪 Testing ---
 test: clean-pycache
