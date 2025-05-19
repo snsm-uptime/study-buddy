@@ -42,13 +42,11 @@ endif
 	docker exec -it $(APP_CONTAINER) poetry run alembic revision --autogenerate -m "$(m)"
 
 first-run: ## 🚀 Remove DB volume, reinitialize database and run migrations
-	docker compose down -v
+	$(MAKE) down
+	$(MAKE) rebuild-dev
 	docker volume rm study-buddy_postgres-data || true
-	$(DOCKER_COMPOSE) up -d postgres
-	@echo "⏳ Waiting for database to be ready..."
-	@until docker exec -it study-buddy-db pg_isready -U postgres; do sleep 1; done
-	@echo "✅ Postgres is ready!"
-	$(DOCKER_COMPOSE) up -d backend
+	$(MAKE) up
+	sleep 3
 	docker exec -it $(APP_CONTAINER) poetry run alembic upgrade head
 
 
