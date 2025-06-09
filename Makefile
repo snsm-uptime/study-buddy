@@ -19,6 +19,9 @@ pre-commit-install: ## Install Git hooks in container
 test: clean-pycache
 	docker exec -it $(APP_CONTAINER) poetry run pytest
 
+test-file: clean-pycache
+	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run pytest tests/$(f)
+
 open-db:
 	docker exec -it study-buddy-db psql -U postgres -d study_buddy
 

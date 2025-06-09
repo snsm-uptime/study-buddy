@@ -17,6 +17,7 @@ services:
         depends_on:
             - postgres
             - ollama
+            - vector-db
 
     postgres:
         image: postgres:15
@@ -31,6 +32,13 @@ services:
             - postgres-data:/var/lib/postgresql/data
             - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+    vector-db:
+        image: chromadb/chroma:latest
+        container_name: chromadb
+        ports:
+            - "8001:8000"
+        volumes:
+            - chroma-data:/data
     ollama:
         image: ollama/ollama
         container_name: ollama
@@ -44,3 +52,4 @@ volumes:
     pip-cache:
     ollama-models:
     postgres-data:
+    chroma-data:
