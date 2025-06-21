@@ -8,6 +8,7 @@ services:
         ports:
             - "${APP_PORT}:${APP_PORT}"
             - "${DEBUG_PORT}:${DEBUG_PORT}"
+            - "${TEST_DEBUG_PORT}:${TEST_DEBUG_PORT}"
         volumes:
             - ./backend:/app
             - poetry-cache:/root/.cache/pypoetry

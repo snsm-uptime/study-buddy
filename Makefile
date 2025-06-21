@@ -1,3 +1,6 @@
+include .env
+export $(shell sed 's/=.*//' .env)
+
 APP_CONTAINER = study-buddy-backend-dev
 DOCKER_COMPOSE ?= docker-compose -f docker-compose.dev.yml
 
@@ -16,8 +19,13 @@ pre-commit-install: ## Install Git hooks in container
 	cd ./backend poetry run pre-commit install
 
 # --- 🧪 Testing ---
-test: clean-pycache
-	docker exec -it $(APP_CONTAINER) poetry run pytest
+test: clean-pycache ## Run tests inside backend container (use DEBUG=true for debugger)
+ifdef DEBUG
+	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run python -Xfrozen_modules=off -m debugpy --listen 0.0.0.0:$(TEST_DEBUG_PORT) --wait-for-client -m pytest tests
+else
+	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run pytest tests
+endif
+
 
 test-file: clean-pycache
 	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run pytest tests/$(f)
