@@ -2,7 +2,12 @@ include .env
 export $(shell sed 's/=.*//' .env)
 
 APP_CONTAINER = study-buddy-backend-dev
-DOCKER_COMPOSE ?= docker-compose -f docker-compose.dev.yml
+DOCKER_COMPOSE = docker-compose -f docker-compose.dev.yml
+
+PYTEST_OPTIONS = -s -vv
+PYTHON_DEBUG_COMMAND = python -Xfrozen_modules=off -m debugpy --listen 0.0.0.0:$(TEST_DEBUG_PORT) --wait-for-client
+PYTEST_CMD_DEBUG = cd ./backend && docker exec -it $(APP_CONTAINER) poetry run $(PYTHON_DEBUG_COMMAND) -m pytest $(PYTEST_OPTIONS)
+PYTEST_CMD = cd ./backend && docker exec -it $(APP_CONTAINER) poetry run pytest $(PYTEST_OPTIONS)
 
 # --- 🔧 Setup & Lint ---
 check: lint test ## Run linters and tests
@@ -20,18 +25,10 @@ pre-commit-install: ## Install Git hooks in container
 
 # --- 🧪 Testing ---
 test: clean-pycache ## Run tests inside backend container (use DEBUG=true for debugger)
-ifdef DEBUG
-	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run python -Xfrozen_modules=off -m debugpy --listen 0.0.0.0:$(TEST_DEBUG_PORT) --wait-for-client -m pytest tests
+ifeq ($(DEBUG),true)
+	$(PYTEST_CMD_DEBUG) tests/$(f)
 else
-	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run pytest tests
-endif
-
-
-test-file: clean-pycache
-ifdef DEBUG
-	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run python -Xfrozen_modules=off -m debugpy --listen 0.0.0.0:$(TEST_DEBUG_PORT) --wait-for-client -m pytest tests/$(f)
-else
-	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run pytest tests/$(f)
+	$(PYTEST_CMD) tests/$(f)
 endif
 
 open-db:
