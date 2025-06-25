@@ -28,7 +28,11 @@ endif
 
 
 test-file: clean-pycache
+ifdef DEBUG
+	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run python -Xfrozen_modules=off -m debugpy --listen 0.0.0.0:$(TEST_DEBUG_PORT) --wait-for-client -m pytest tests/$(f)
+else
 	cd ./backend && docker exec -it $(APP_CONTAINER) poetry run pytest tests/$(f)
+endif
 
 open-db:
 	docker exec -it study-buddy-db psql -U postgres -d study_buddy
