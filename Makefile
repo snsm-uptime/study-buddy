@@ -24,11 +24,12 @@ pre-commit-install: ## Install Git hooks in container
 	cd ./backend poetry run pre-commit install
 
 # --- 🧪 Testing ---
-test: clean-pycache ## Run tests inside backend container (use DEBUG=true for debugger)
-ifeq ($(DEBUG),true)
-	$(PYTEST_CMD_DEBUG) tests/$(f)
-else
+test: clean-pycache
+	@echo "DEBUG=$(DEBUG)"
+ifneq ($(DEBUG),true)
 	$(PYTEST_CMD) tests/$(f)
+else
+	$(PYTEST_CMD_DEBUG) tests/$(f)
 endif
 
 open-db:
