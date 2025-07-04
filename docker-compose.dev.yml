@@ -40,13 +40,15 @@ services:
             - "8001:8000"
         volumes:
             - chroma-data:/data
+
     ollama:
         image: ollama/ollama
         container_name: ollama
         ports:
-            - "11434:11434"
+            - "11111:11434"
         volumes:
             - ollama-models:/root/.ollama
+        # command: bash -c "ollama pull deepseek-r1:1.5b && ollama serve"
 
 volumes:
     poetry-cache:
